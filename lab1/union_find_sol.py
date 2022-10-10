@@ -2,6 +2,7 @@ from dimacs import loadWeightedGraph, readSolution
 from os import listdir
 from os.path import isfile
 
+
 class Node():
     def __init__(self, value):
         self.parent = self
