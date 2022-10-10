@@ -1,6 +1,8 @@
+from cmath import inf
 from dimacs import loadWeightedGraph, readSolution
 from os import listdir
 from os.path import isfile
+from queue import PriorityQueue, Queue
 
 class Node():
     def __init__(self, value):
@@ -24,20 +26,35 @@ class Node():
             if self.rank == y.rank:
                 y.rank += 1
 
+def makeAdjList(V, L):
+    R = [[] for _ in range(V)]
+    for el in L:
+        R[el[0]].append([el[1], el[2]])
+        R[el[1]].append([el[0], el[2]])
+    return R
+
 def sol(A):
     (V, L) = loadWeightedGraph(A)
-    L.sort(key=lambda x : x[2],reverse=True)
-    forest = []
-    for i in range(V + 1):
-        forest.append(Node(i))
+    V += 1
     s, t = 1, 2
-    for el in L:
-        if forest[el[0]].find() == forest[el[1]].find():
+    q = PriorityQueue()
+    weight = [float("-inf") for _ in range(V)]
+    weight[s] = float("inf")
+    G = makeAdjList(V, L)
+    q.put((float("inf"), s))
+    while not q.empty():
+        wi, v = q.get()
+        if weight[v] > -wi and weight[v] != inf:
             continue
-        forest[el[0]].union(forest[el[1]])
-        if forest[s].find() == forest[t].find():
-            return el[2]
-    return None
+        for u in G[v]:
+            if weight[v] >= u[1] and weight[u[0]] < u[1]:
+                weight[u[0]] = u[1]
+                q.put((-weight[u[0]], u[0]))
+            if weight[v] <= u[1] and weight[u[0]] < weight[v]:
+                weight[u[0]] = weight[v]
+                q.put((-weight[u[0]], u[0]))
+
+    return weight[t]
 
 graphs = listdir("graphs")
 
