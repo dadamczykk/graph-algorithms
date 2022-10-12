@@ -23,15 +23,17 @@ def sol(A):
     q.put((float("inf"), s))
     while not q.empty():
         wi, v = q.get()
+        if v == t:
+            return -wi
         if weight[v] > -wi and weight[v] != float("inf"):
             continue
         for u in G[v]:
             if weight[v] >= u[1] and weight[u[0]] < u[1]:
                 weight[u[0]] = u[1]
-                q.put((-weight[u[0]], u[0]))
+                q.put((-u[1], u[0]))
             if weight[v] <= u[1] and weight[u[0]] < weight[v]:
                 weight[u[0]] = weight[v]
-                q.put((-weight[u[0]], u[0]))
+                q.put((-weight[v], u[0]))
 
     return weight[t]
 
