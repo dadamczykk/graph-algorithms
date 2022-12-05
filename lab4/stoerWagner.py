@@ -92,9 +92,8 @@ def test():
     for graph in graphs:
         if not isfile("graphs/" + graph):
             continue
-        if graph == 'grid100x100' : continue
         f = open("graphs/" + graph, "r")
-        # if graph == 'grid100x100': continue
+        if graph == 'grid100x100': continue
         ans = int(readSolution("graphs/" + graph))
         print("============================")
         print("filename: " + graph)

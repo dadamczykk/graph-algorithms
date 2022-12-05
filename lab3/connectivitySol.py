@@ -28,21 +28,23 @@ def sol(A):
     s = 0
     minMaxFlow = float("inf")
     for t in range(1, V):
-        
-        print(t, end=" ")
         mat = deepcopy(graphMatrix)
         adj = deepcopy(graphAdjList)
         minMaxFlow = min(minMaxFlow, edmondsKarp(mat, adj, s, t))
     print("")
     return minMaxFlow
-areThereProblems = False
+
+import time
+
 def test():
+    t = time.time()
+    areThereProblems = False
     graphs = listdir("graphs//")
     print (graphs)
     
     # print
     for graph in graphs:
-        if graph == 'clique200': continue
+        if graph == 'grid100x100': continue
         if not isfile("graphs/" + graph):
             continue
         f = open("graphs/" + graph, "r")
@@ -56,10 +58,11 @@ def test():
         print("given solution: ", ans)
         print("my solution: ", myans)
         print("answer is " + "correct" if myans == ans else "uncorrect")
+    print("czas działania", time.time() - t)
+    return areThereProblems
 
  
-test()
-if areThereProblems:
+if test():
     print("\n\n=== There are some mistakes")
 else:
     print("\n\n=== All correct!")
