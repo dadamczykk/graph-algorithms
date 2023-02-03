@@ -1,7 +1,8 @@
+import os, sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from dimacs import loadWeightedGraph
+from runtest import runtest
 from collections import deque
-from dimacs import loadWeightedGraph, readSolution
-from os import listdir
-from os.path import isfile
 
 # DFS solution requires changing recursion depth limit, or implementation of stack
 
@@ -63,19 +64,6 @@ def sol(A):
     return binSearch(G, L, 0, len(L) - 1, s, t)
     
 
-graphs = listdir("graphs")
+graphs = os.path.dirname(os.path.abspath(__file__)) + "\\graphs"
 
-for graph in graphs:
-    # if graph != "path10":
-    #     continue
-    if not isfile("graphs/" + graph):
-        continue
-    f = open("graphs/" + graph, "r")
-    line = f.readline()
-    ans = int(readSolution("graphs/" + graph))
-    myans = sol("graphs/" + graph)
-    print("============================")
-    print("filename: " + graph)
-    print("given solution: ", ans)
-    print("my solution: ", myans)
-    print("answer is " + "correct" if myans == ans else "uncorrect")
+runtest(sol, graphs)

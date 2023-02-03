@@ -1,6 +1,7 @@
-from dimacs import loadWeightedGraph, readSolution
-from os import listdir
-from os.path import isfile
+import os, sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from dimacs import loadWeightedGraph
+from runtest import runtest
 from queue import PriorityQueue
 
 
@@ -10,7 +11,6 @@ def makeAdjList(V, L):
         R[el[0]].append([el[1], el[2]])
         R[el[1]].append([el[0], el[2]])
     return R
-
 
 def sol(A):
     (V, L) = loadWeightedGraph(A)
@@ -38,17 +38,6 @@ def sol(A):
     return weight[t]
 
 
-graphs = listdir("graphs")
+graphs = os.path.dirname(os.path.abspath(__file__)) + "\\graphs"
 
-for graph in graphs:
-    if not isfile("graphs/" + graph):
-        continue
-    f = open("graphs/" + graph, "r")
-    line = f.readline()
-    ans = int(readSolution("graphs/" + graph))
-    myans = sol("graphs/" + graph)
-    print("============================")
-    print("filename: " + graph)
-    print("given solution: ", ans)
-    print("my solution: ", myans)
-    print("answer is " + "correct" if myans == ans else "uncorrect")
+runtest(sol, graphs)

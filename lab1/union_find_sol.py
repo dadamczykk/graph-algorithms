@@ -1,7 +1,7 @@
-from dimacs import loadWeightedGraph, readSolution
-from os import listdir
-from os.path import isfile
-
+import os, sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from dimacs import loadWeightedGraph
+from runtest import runtest
 
 class Node():
     def __init__(self, value):
@@ -40,17 +40,6 @@ def sol(A):
             return el[2]
     return None
 
-graphs = listdir("graphs")
+graphs = os.path.dirname(os.path.abspath(__file__)) + "\\graphs"
 
-for graph in graphs:
-    if not isfile("graphs/" + graph):
-        continue
-    f = open("graphs/" + graph, "r")
-    line = f.readline()
-    ans = int(readSolution("graphs/" + graph))
-    myans = sol("graphs/" + graph)
-    print("============================")
-    print("filename: " + graph)
-    print("given solution: ", ans)
-    print("my solution: ", myans)
-    print("answer is " + "correct" if myans == ans else "uncorrect")
+runtest(sol, graphs)
