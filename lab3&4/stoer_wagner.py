@@ -1,6 +1,7 @@
-from genericpath import isfile
-from os import listdir
-from dimacs import loadWeightedGraph, readSolution
+import os, sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from dimacs import loadWeightedGraph
+from runtest import runtest
 from queue import PriorityQueue
 
 class Node:
@@ -22,7 +23,7 @@ def printGraph(graph):
     for el in graph:
         print(el, el.mergedWith, el.activated)
         
-def mergeVertices(graph, x, y): # do wierzchołka x dołączany jest wierzchołek y
+def merge_vertices(graph, x, y): # y vertex is connected to x vertex
     for to in graph[y].edges:
         if graph[to].edges.get(y, 0) != 0:
             graph[to].delEdge(y)
@@ -34,7 +35,7 @@ def mergeVertices(graph, x, y): # do wierzchołka x dołączany jest wierzchołe
     graph[y].activated = False
     
     
-def minCutPhase(graph, activeVertex):
+def min_cut_phase(graph, activeVertex):
     a = 0
     S = {a}
     q = PriorityQueue()
@@ -60,12 +61,12 @@ def minCutPhase(graph, activeVertex):
         potentialAns = -val
         t = s
         s = v
-    mergeVertices(graph, s, t)
+    merge_vertices(graph, s, t)
     
     return potentialAns
 
 
-def stoerWagner(dimacsFile):
+def stoer_wagner(dimacsFile):
     (V, L) = loadWeightedGraph(dimacsFile)
     graph = [Node() for _ in range(V)]
     
@@ -78,39 +79,9 @@ def stoerWagner(dimacsFile):
     for i in range(V):
         # if i%100 == 0:
         #     print(i, end=" ")
-        ans = min(ans, minCutPhase(graph, V - i))
+        ans = min(ans, min_cut_phase(graph, V - i))
     return ans
         
-    
-import time
-def test():
-    t = time.time()
-    areThereProblems = False
-    graphs = listdir("graphs//")
-    print (graphs)
+graphs = os.path.dirname(os.path.abspath(__file__)) + "\\graphs"
 
-    for graph in graphs:
-        if not isfile("graphs/" + graph):
-            continue
-        if graph == 'grid100x100' : continue
-        f = open("graphs/" + graph, "r")
-        # if graph == 'grid100x100': continue
-        ans = int(readSolution("graphs/" + graph))
-        print("============================")
-        print("filename: " + graph)
-        myans = stoerWagner("graphs/" + graph)
-        if ans != myans:
-            areThereProblems = True
-        
-        print("given solution: ", ans)
-        print("my solution: ", myans)
-        print("answer is " + "correct" if myans == ans else "uncorrect")
-    print("czas działania", time.time() - t)
-    return areThereProblems
-
- 
-
-if test():
-    print("\n\n=== There are some mistakes")
-else:
-    print("\n\n=== All correct!")
+runtest(stoer_wagner, graphs)
