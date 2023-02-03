@@ -1,8 +1,9 @@
+import os, sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from dimacs import loadDirectedWeightedGraph
+from runtest import runtest
 import networkx as nx
 from networkx.algorithms.flow import *
-from genericpath import isfile
-from os import listdir
-from dimacs import loadDirectedWeightedGraph, readSolution
 
 
 def flow(file):
@@ -21,28 +22,6 @@ def flow(file):
     return maximum_flow(G, 1, V)[0]
 
 
-def test():
-    areThereProblems = False
-    graphs = listdir("graphs//flow")
-    print (graphs)
+graphs = os.path.dirname(os.path.abspath(__file__)) + "\\graphs\\flow"
 
-    for graph in graphs:
-        if not isfile("graphs/flow/" + graph):
-            continue
-        f = open("graphs/flow/" + graph, "r")
-        ans = int(readSolution("graphs/flow/" + graph))
-        print("============================")
-        print("filename: " + graph)
-        myans = flow("graphs/flow/" + graph)
-        if ans != myans:
-            areThereProblems = True
-        
-        print("given solution: ", ans)
-        print("my solution: ", myans)
-        print("answer is " + "correct" if myans == ans else "uncorrect")
-    return areThereProblems
-
-if not test():
-    print("All tests passed!")
-else:
-    print("There are problems.")
+runtest(flow, graphs)

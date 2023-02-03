@@ -1,9 +1,10 @@
+import os, sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from dimacs import loadCNFFormula
+from runtest import runtest
 import networkx as nx
-from genericpath import isfile
-from os import listdir
 from networkx.algorithms.components import strongly_connected_components
 from networkx.algorithms.dag import topological_sort
-from dimacs import loadCNFFormula, readSolution
 
 
 def sat2cnf(file):
@@ -51,7 +52,7 @@ def sat2cnf(file):
                 vertices_bool[-var] = True
     print(vertices_bool)
     
-    print("Czy wartościowanie jest poprawne: ", are_values_ok(F, vertices_bool))
+    print("Is valuation correct: ", are_values_ok(F, vertices_bool))
 
     return True
 
@@ -70,28 +71,6 @@ def are_values_ok(G, B):
     return True
 
 
-def test():
-    areThereProblems = False
-    graphs = listdir("graphs//sat")
-    print (graphs)
+graphs = os.path.dirname(os.path.abspath(__file__)) + "\\graphs\\sat"
 
-    for graph in graphs:
-        if not isfile("graphs/sat/" + graph):
-            continue
-        f = open("graphs/sat/" + graph, "r")
-        ans = int(readSolution("graphs/sat/" + graph))
-        print("============================")
-        print("filename: " + graph)
-        myans = sat2cnf("graphs/sat/" + graph)
-        if ans != myans:
-            areThereProblems = True
-        
-        print("given solution: ", ans)
-        print("my solution: ", myans)
-        print("answer is " + "correct" if myans == ans else "uncorrect")
-    return areThereProblems
-
-if not test():
-    print("All tests passed!")
-else:
-    print("There are problems.")
+runtest(sat2cnf, graphs)
